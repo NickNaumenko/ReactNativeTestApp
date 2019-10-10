@@ -1,11 +1,12 @@
 import React from 'react';
 import {Provider} from 'react-redux';
 import {store} from './store';
-import ImagesList from './containers/ImagesList';
+import ImagesListView from './views/ImagesListView';
+import {AppNavigator} from './routes';
 
 const App = () => (
   <Provider store={store}>
-    <ImagesList />
+    <AppNavigator />
   </Provider>
 );
 
