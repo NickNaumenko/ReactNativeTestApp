@@ -3,7 +3,6 @@ import {fetchImages} from '../../routines';
 import * as imagesService from '../../services/imagesService';
 
 function* imagesRequest() {
-  console.log('fetching images from saga');
   try {
     yield put(fetchImages.request());
     const images = yield call(imagesService.getImages);

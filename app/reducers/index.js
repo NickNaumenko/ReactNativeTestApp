@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import imagesList from '../containers/ImagesList/reducer';
+import imagesList from '../views/ImagesListView/reducer';
 
 export default combineReducers({
   imagesList,
