@@ -1,5 +1,5 @@
 import {fetchImages} from '../../routines';
-const initialState = {};
+const initialState = {loading: false, images: []};
 
 export default (state = initialState, action) => {
   switch (action.type) {

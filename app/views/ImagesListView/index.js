@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import {fetchImages} from '../../routines';
 import styles from './styles';
+import * as imageHelper from '../../helpers/imageHelper';
 
-const {width, height} = Dimensions.get('window');
+const IMAGES_PER_ROW = 2;
 
 class ImagesListView extends React.Component {
   constructor(props) {
@@ -20,6 +21,7 @@ class ImagesListView extends React.Component {
       refreshing: props.loading || false,
     };
     this.goToImage = this.goToImage.bind(this);
+    this.handleRefresch = this.handleRefresch.bind(this);
   }
 
   componentDidMount() {
@@ -28,18 +30,24 @@ class ImagesListView extends React.Component {
 
   renderItem(item) {
     const {
-      urls: {thumb},
+      urls,
       user: {name},
     } = item;
 
+    const {width} = Dimensions.get('window');
+    const imageSize = width / IMAGES_PER_ROW;
+    const image = imageHelper.choseImage(imageSize);
+
     return (
-      <TouchableOpacity onPress={() => this.goToImage(item)}>
+      <TouchableOpacity
+        onPress={() => this.goToImage(item)}
+        style={styles.listItem}>
         <Image
-          source={{uri: thumb}}
-          style={{height: 200, width: 200}}
-          resizeMode="contain"
+          source={{uri: urls[image]}}
+          style={{height: imageSize}}
+          resizeMode="cover"
         />
-        <Text>{name}</Text>
+        <Text style={styles.author}>{name}</Text>
       </TouchableOpacity>
     );
   }
@@ -49,10 +57,16 @@ class ImagesListView extends React.Component {
     navigation.navigate('Image', {image});
   }
 
+  async handleRefresch() {
+    this.setState({refreshing: true});
+    await this.props.fetchImages();
+    this.setState({refreshing: false});
+  }
+
   render() {
-    const {loading, images, fetchImages} = this.props;
+    const {loading, images} = this.props;
     const {refreshing} = this.state;
-    console.log(loading);
+    console.log('loading: ', loading, 'refreshing: ', refreshing);
 
     return loading ? (
       <View>
@@ -63,8 +77,10 @@ class ImagesListView extends React.Component {
         data={images}
         renderItem={({item}) => this.renderItem(item)}
         keyExtractor={item => item.id}
-        onRefresh={fetchImages}
+        numColumns={2}
+        onRefresh={this.handleRefresch}
         refreshing={refreshing}
+        style={styles.imagesList}
       />
     );
   }
@@ -83,4 +99,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(ImagesListView);
-// export default ImagesList;
