@@ -2,7 +2,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {
   FlatList,
-  View,
   Text,
   Image,
   TouchableOpacity,
@@ -11,17 +10,15 @@ import {
 import {fetchImages} from '../../routines';
 import styles from './styles';
 import * as imageHelper from '../../helpers/imageHelper';
+import Loader from '../../components/Loader';
 
 const IMAGES_PER_ROW = 2;
 
 class ImagesListView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      refreshing: props.loading || false,
-    };
+
     this.goToImage = this.goToImage.bind(this);
-    this.handleRefresch = this.handleRefresch.bind(this);
   }
 
   componentDidMount() {
@@ -57,29 +54,19 @@ class ImagesListView extends React.Component {
     navigation.navigate('Image', {image});
   }
 
-  async handleRefresch() {
-    this.setState({refreshing: true});
-    await this.props.fetchImages();
-    this.setState({refreshing: false});
-  }
-
   render() {
-    const {loading, images} = this.props;
-    const {refreshing} = this.state;
-    console.log('loading: ', loading, 'refreshing: ', refreshing);
+    const {loading, images, fetchImages} = this.props;
 
     return loading ? (
-      <View>
-        <Text>Loading</Text>
-      </View>
+      <Loader />
     ) : (
       <FlatList
         data={images}
         renderItem={({item}) => this.renderItem(item)}
         keyExtractor={item => item.id}
         numColumns={2}
-        onRefresh={this.handleRefresch}
-        refreshing={refreshing}
+        onRefresh={fetchImages}
+        refreshing={false}
         style={styles.imagesList}
       />
     );
