@@ -8,7 +8,7 @@ function* imagesRequest() {
     const images = yield call(imagesService.getImages);
     yield put(fetchImages.success(images));
   } catch (error) {
-    console.error(error);
+    alert(error);
   } finally {
     yield put(fetchImages.fulfill());
   }
